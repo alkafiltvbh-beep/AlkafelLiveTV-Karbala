@@ -1,7 +1,6 @@
 package tv.alkafel.live;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
@@ -49,7 +48,6 @@ public class MainActivity extends Activity {
     private ExoPlayer player;
     private PlayerView playerView;
     private LinearLayout prayerRows;
-    private LinearLayout whatsappNumbersSection;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -158,34 +156,25 @@ public class MainActivity extends Activity {
         ticker.addView(marquee, new LinearLayout.LayoutParams(0, dp(48), 1f));
         page.addView(ticker, matchWrapWithMargin(0, 0, 0, 14));
 
-        sectionTitle(page, "الإعلانات والبوسترات");
-        LinearLayout ads = new LinearLayout(this);
-        ads.setOrientation(LinearLayout.VERTICAL);
-        ads.setPadding(dp(2), dp(2), dp(2), dp(2));
-
-        ads.addView(posterImage("إعلان القناة", "poster_app_1", 0),
-                matchWrapWithMargin(0, 0, 0, 10));
-        ads.addView(posterImage("انطلاقة جديدة", "poster_youtube", 1),
-                matchWrapWithMargin(0, 0, 0, 10));
-        ads.addView(posterImage("تطبيق الكافل الفضائية", "poster_app_2", 2),
-                matchWrapWithMargin(0, 0, 0, 10));
-
-        TextView postersMore = txt("عرض جميع البوسترات", 14, true, GOLD);
-        postersMore.setGravity(Gravity.CENTER);
-        postersMore.setBackground(roundBg(CARD, 14, 1, RED));
-        postersMore.setOnClickListener(v ->
-                startActivity(new Intent(this, PosterActivity.class)));
-        ads.addView(postersMore, matchWrapWithMargin(0, 0, 0, 14));
-        page.addView(ads);
-
-        sectionTitle(page, "الزيارات واستديو الكافل");
+        sectionTitle(page, "المحتوى المميز");
         GridLayout features = new GridLayout(this);
         features.setColumnCount(3);
         features.setAlignmentMode(GridLayout.ALIGN_MARGINS);
         features.addView(featureCard("لبيك يا حسين", "يا حسين", 0), gridFeature());
-        features.addView(featureCard("الزيارات والصوتيات", "زيارة", 1), gridFeature());
+        features.addView(featureCard("الزيارات", "زيارة", 1), gridFeature());
         features.addView(studioCard(), gridFeature());
         page.addView(features, matchWrapWithMargin(0, 0, 0, 14));
+
+        sectionTitle(page, "الإعلانات والبوسترات");
+        HorizontalScrollView adsScroll = new HorizontalScrollView(this);
+        adsScroll.setHorizontalScrollBarEnabled(false);
+        LinearLayout ads = new LinearLayout(this);
+        ads.setOrientation(LinearLayout.HORIZONTAL);
+        ads.addView(poster("إعلان القناة", "البث على مدار الساعة"));
+        ads.addView(poster("برامج ومجالس", "تابع جديد الكافل"));
+        ads.addView(poster("تنويه", "تحديثات القناة"));
+        adsScroll.addView(ads);
+        page.addView(adsScroll, matchWrapWithMargin(0, 0, 0, 14));
 
         sectionTitle(page, "مواقيت الصلاة");
         LinearLayout prayerCard = cardContainer(16, Color.rgb(95,65,15));
@@ -208,17 +197,7 @@ public class MainActivity extends Activity {
             social.addView(socialButton(socialNames[i], socialIcons[i]),
                     new LinearLayout.LayoutParams(0, dp(78), 1f));
         }
-        page.addView(social, matchWrapWithMargin(0, 0, 0, 6));
-
-        whatsappNumbersSection = cardContainer(16, Color.rgb(30,80,45));
-        whatsappNumbersSection.setPadding(dp(10), dp(8), dp(10), dp(8));
-        TextView waTitle = txt("واتساب — اضغط على الرقم للمراسلة مباشرة", 14, true, Color.WHITE);
-        waTitle.setGravity(Gravity.CENTER);
-        whatsappNumbersSection.addView(waTitle);
-        whatsappNumbersSection.addView(whatsappNumber("+964 776 240 9447", "https://wa.me/9647762409447"));
-        whatsappNumbersSection.addView(whatsappNumber("+964 773 128 0973", "https://wa.me/9647731280973"));
-        whatsappNumbersSection.addView(whatsappNumber("+44 7348 468958", "https://wa.me/447348468958"));
-        page.addView(whatsappNumbersSection, matchWrapWithMargin(0, 0, 0, 12));
+        page.addView(social, matchWrapWithMargin(0, 0, 0, 12));
 
         LinearLayout nav = cardContainer(18, RED);
         nav.setOrientation(LinearLayout.HORIZONTAL);
@@ -312,12 +291,6 @@ public class MainActivity extends Activity {
         TextView t = txt(title, 14, true, Color.WHITE);
         t.setGravity(Gravity.CENTER);
         c.addView(t);
-
-        if (type == 0) {
-            c.setOnClickListener(v -> startActivity(new Intent(this, LabbaikActivity.class)));
-        } else {
-            c.setOnClickListener(v -> startActivity(new Intent(this, ZiyaratActivity.class)));
-        }
         return c;
     }
 
@@ -332,36 +305,23 @@ public class MainActivity extends Activity {
         TextView t = txt("استديو الكافل", 13, true, Color.WHITE);
         t.setGravity(Gravity.CENTER);
         c.addView(t);
-        c.setOnClickListener(v -> startActivity(new Intent(this, StudioActivity.class)));
         return c;
     }
 
-    private View posterImage(String title, String resourceName, int index) {
-        LinearLayout card = cardContainer(18, RED);
-        card.setPadding(dp(4), dp(4), dp(4), dp(4));
-
-        ImageView image = new ImageView(this);
-        int id;
-        if ("poster_app_1".equals(resourceName)) id = R.drawable.poster_app_1;
-        else if ("poster_youtube".equals(resourceName)) id = R.drawable.poster_youtube;
-        else id = R.drawable.poster_app_2;
-        image.setImageResource(id);
-        image.setAdjustViewBounds(true);
-        image.setScaleType(ImageView.ScaleType.FIT_CENTER);
-        card.addView(image, new LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-
-        TextView label = txt(title, 14, true, Color.WHITE);
-        label.setGravity(Gravity.CENTER);
-        card.addView(label, new LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT, dp(44)));
-
-        card.setOnClickListener(v -> {
-            Intent intent = new Intent(this, PosterActivity.class);
-            intent.putExtra("poster_index", index);
-            startActivity(intent);
-        });
-        return card;
+    private View poster(String title, String sub) {
+        LinearLayout p = cardContainer(18, RED);
+        p.setGravity(Gravity.CENTER);
+        p.setPadding(dp(16), dp(16), dp(16), dp(16));
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(dp(220), dp(120));
+        lp.setMargins(0, 0, dp(10), 0);
+        p.setLayoutParams(lp);
+        TextView t = txt(title, 18, true, Color.WHITE);
+        t.setGravity(Gravity.CENTER);
+        TextView s = txt(sub, 13, false, MUTED);
+        s.setGravity(Gravity.CENTER);
+        p.addView(t);
+        p.addView(s);
+        return p;
     }
 
     private View socialButton(String name, String icon) {
@@ -376,39 +336,11 @@ public class MainActivity extends Activity {
         TextView n = txt(name, 10, false, MUTED);
         i.setGravity(Gravity.CENTER);
         n.setGravity(Gravity.CENTER);
-        b.addView(i); b.addView(n);
-        b.setOnClickListener(v -> {
-            if ("يوتيوب".equals(name)) openUrl("https://www.youtube.com/@AlkafilTVBHUK");
-            else if ("فيسبوك".equals(name)) openUrl("https://www.facebook.com/profile.php?id=61592112443888");
-            else if ("إنستغرام".equals(name)) openUrl("https://www.instagram.com/alkafil.tv/");
-            else if ("تيليجرام".equals(name)) openUrl("https://t.me/ALKAFELTV");
-            else if ("واتساب".equals(name)) openUrl("https://wa.me/9647762409447");
-        });
+        b.addView(i);
+        b.addView(n);
+        b.setOnClickListener(v ->
+                Toast.makeText(this, "نربط رابط " + name + " الرسمي بالخطوة القادمة", Toast.LENGTH_SHORT).show());
         return b;
-    }
-
-    private void openUrl(String url) {
-        try { startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url))); }
-        catch (Exception e) { Toast.makeText(this, "تعذر فتح الرابط", Toast.LENGTH_SHORT).show(); }
-    }
-
-    private View whatsappNumber(String number, String url) {
-        TextView v = txt(number, 17, true, Color.WHITE);
-        v.setGravity(Gravity.CENTER);
-        v.setBackground(roundBg(Color.rgb(20,55,30), 12, 1, Color.rgb(55,130,75)));
-        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT, dp(52));
-        lp.setMargins(0, dp(4), 0, dp(4));
-        v.setLayoutParams(lp);
-        v.setOnClickListener(view -> openUrl(url));
-        return v;
-    }
-
-    private void scrollToWhatsAppNumbers() {
-        if (whatsappNumbersSection != null) {
-            whatsappNumbersSection.requestFocus();
-            whatsappNumbersSection.performClick();
-        }
     }
 
     private View navItem(String name, String icon, boolean active) {
