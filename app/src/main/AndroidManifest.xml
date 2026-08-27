@@ -11,6 +11,7 @@
         android:theme="@style/Theme.AlkafelLiveTV"
         android:label="الكافل الفضائية"
         android:supportsRtl="true">
+        <activity android:name=".ZiyaratActivity" android:screenOrientation="portrait" android:exported="false" />
         <activity
             android:name=".MainActivity"
             android:screenOrientation="portrait"
