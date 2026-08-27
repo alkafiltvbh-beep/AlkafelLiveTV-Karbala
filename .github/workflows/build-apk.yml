@@ -1,4 +1,4 @@
-name: Build Karbala Iraq APK
+name: Build Karbala APK
 
 on:
   workflow_dispatch:
@@ -20,58 +20,17 @@ jobs:
           distribution: temurin
           java-version: "17"
 
-      - name: Setup Gradle 8.9
+      - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: "8.9"
 
-      - name: Restore signing key
-        env:
-          KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
-        run: |
-          python3 - <<'PY'
-          import os
-          import re
-          import base64
-
-          value = os.environ["KEYSTORE_BASE64"]
-          value = re.sub(r"[^A-Za-z0-9+/=]", "", value)
-          value = value.rstrip("=")
-          value += "=" * (-len(value) % 4)
-
-          data = base64.b64decode(value)
-
-          with open("alkafel-release.keystore", "wb") as output:
-              output.write(data)
-
-          print("Keystore restored:", len(data), "bytes")
-          PY
-
-          test -s alkafel-release.keystore
-
-      - name: Verify signing key
-        env:
-          STORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
-          KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
-        run: |
-          keytool -list \
-            -keystore alkafel-release.keystore \
-            -storetype PKCS12 \
-            -storepass "$STORE_PASSWORD" \
-            -alias "$KEY_ALIAS"
-
-      - name: Build Karbala release
-        env:
-          ALKAFEL_KEYSTORE_PATH: ${{ github.workspace }}/alkafel-release.keystore
-          ALKAFEL_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
-          ALKAFEL_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
-          ALKAFEL_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
-        run: |
-          gradle clean :app:assembleRelease --stacktrace
+      - name: Build APK
+        run: gradle clean :app:assembleDebug --stacktrace
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: Alkafel-Karbala-Iraq-Release
-          path: app/build/outputs/apk/release/*.apk
+          name: Alkafel-Karbala-Iraq
+          path: app/build/outputs/apk/debug/*.apk
           if-no-files-found: error
