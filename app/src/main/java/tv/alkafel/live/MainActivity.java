@@ -1,6 +1,8 @@
 package tv.alkafel.live;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.media.MediaPlayer;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -292,7 +294,14 @@ public class MainActivity extends Activity {
         TextView t = txt(title, 14, true, Color.WHITE);
         t.setGravity(Gravity.CENTER);
         c.addView(t);
+        if (type == 1) c.setOnClickListener(v -> showZiyaratAudio());
         return c;
+    }
+
+    private void showZiyaratAudio() {
+        String[] names = {"دعاء الفرج","دعاء الصباح","دعاء التوسل","زيارة أمين الله","زيارة عاشوراء","زيارة وارث"};
+        int[] sounds = {R.raw.dua_faraj,R.raw.dua_sabah,R.raw.dua_tawassul,R.raw.ziyarat_amin_allah,R.raw.ziyarat_ashura,R.raw.ziyarat_warith};
+        new AlertDialog.Builder(this).setTitle("الزيارات والصوتيات").setItems(names,(d,w) -> { MediaPlayer m=MediaPlayer.create(this,sounds[w]); if(m!=null){ m.setOnCompletionListener(x -> x.release()); m.start(); Toast.makeText(this,"يعمل الآن: "+names[w],Toast.LENGTH_SHORT).show(); } }).setNegativeButton("إغلاق",null).show();
     }
 
     private View studioCard() {
