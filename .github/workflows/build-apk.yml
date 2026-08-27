@@ -15,7 +15,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Setup Java 17
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           distribution: temurin
           java-version: "17"
@@ -29,8 +29,21 @@ jobs:
         env:
           KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
         run: |
-          printf '%s' "$KEYSTORE_BASE64" | base64 --decode > alkafel-release.keystore
+          printf '%s' "$KEYSTORE_BASE64" \
+            | base64 --decode --ignore-garbage \
+            > alkafel-release.keystore
           test -s alkafel-release.keystore
+
+      - name: Verify signing key
+        env:
+          STORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+        run: |
+          keytool -list \
+            -keystore alkafel-release.keystore \
+            -storetype PKCS12 \
+            -storepass "$STORE_PASSWORD" \
+            -alias "$KEY_ALIAS"
 
       - name: Build Karbala release
         env:
