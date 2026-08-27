@@ -29,9 +29,24 @@ jobs:
         env:
           KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
         run: |
-          printf '%s' "$KEYSTORE_BASE64" \
-            | base64 --decode --ignore-garbage \
-            > alkafel-release.keystore
+          python3 - <<'PY'
+          import os
+          import re
+          import base64
+
+          value = os.environ["KEYSTORE_BASE64"]
+          value = re.sub(r"[^A-Za-z0-9+/=]", "", value)
+          value = value.rstrip("=")
+          value += "=" * (-len(value) % 4)
+
+          data = base64.b64decode(value)
+
+          with open("alkafel-release.keystore", "wb") as output:
+              output.write(data)
+
+          print("Keystore restored:", len(data), "bytes")
+          PY
+
           test -s alkafel-release.keystore
 
       - name: Verify signing key
