@@ -278,7 +278,7 @@ public class MainActivity extends Activity {
         TextView t = txt(icon + "\n" + title, 14, true, Color.WHITE);
         t.setGravity(Gravity.CENTER);
         t.setBackground(roundBg(CARD, 16, 1, Color.rgb(65,65,65)));
-        t.setOnClickListener(v -> Toast.makeText(this, title + " — قريبًا", Toast.LENGTH_SHORT).show());
+        t.setOnClickListener(v -> { if ("المجالس".equals(title)) openUrl("https://www.youtube.com/@AlkafilTVBHUK"); else Toast.makeText(this, title + " — قريبًا", Toast.LENGTH_SHORT).show(); });
         return t;
     }
 
