@@ -338,10 +338,11 @@ public class MainActivity extends Activity {
         n.setGravity(Gravity.CENTER);
         b.addView(i);
         b.addView(n);
-        b.setOnClickListener(v ->
-                Toast.makeText(this, "نربط رابط " + name + " الرسمي بالخطوة القادمة", Toast.LENGTH_SHORT).show());
+        b.setOnClickListener(v -> { if ("يوتيوب".equals(name)) openUrl("https://www.youtube.com/@AlkafilTVBHUK"); else if ("فيسبوك".equals(name)) openUrl("https://www.facebook.com/profile.php?id=61592112443888"); else if ("إنستغرام".equals(name)) openUrl("https://www.instagram.com/alkafil.tv/"); else if ("تيليجرام".equals(name)) openUrl("https://t.me/ALKAFELTV"); else if ("واتساب".equals(name)) openUrl("https://wa.me/9647762409447"); });
         return b;
     }
+
+    private void openUrl(String url) { try { startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url))); } catch (Exception e) { Toast.makeText(this, "تعذر فتح الرابط", Toast.LENGTH_SHORT).show(); } }
 
     private View navItem(String name, String icon, boolean active) {
         LinearLayout b = new LinearLayout(this);
