@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "207636839919",
+    "project_id": "alkafel-live-tv",
+    "storage_bucket": "alkafel-live-tv.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:207636839919:android:d23948fa34798b86ac4a1a",
+        "android_client_info": {
+          "package_name": "tv.alkafel.live"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAk64EgKL520FU-fc_6mWUJ6G4qX1-7yeU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
