@@ -21,12 +21,13 @@ public final class AppUpdateChecker {
 
     private static void showIfNeeded(Activity activity, DocumentSnapshot document) {
         if (!document.exists() || activity.isFinishing()) return;
-        Number newest = (Number) document.get("versionCode");
+        Boolean enabled = document.getBoolean("enabled"); if (enabled != null && !enabled) return;
+        Number newest = (Number) document.get("versionCode"); if (newest == null) newest = (Number) document.get("order");
         long current; try { current = activity.getPackageManager().getPackageInfo(activity.getPackageName(), 0).versionCode; } catch (Exception e) { return; }
         if (newest == null || newest.longValue() <= current) return;
 
-        String message = document.getString("message");
-        String apkUrl = document.getString("apkUrl");
+        String message = document.getString("message"); if (message == null) message = document.getString("description");
+        String apkUrl = document.getString("apkUrl"); if (apkUrl == null) apkUrl = document.getString("url");
         Boolean force = document.getBoolean("force");
         if (apkUrl == null || apkUrl.trim().isEmpty()) return;
         if (message == null || message.trim().isEmpty()) {
