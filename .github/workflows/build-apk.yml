@@ -27,9 +27,9 @@ jobs:
 
       - name: Restore signing key
         env:
-          KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          KEYSTORE_HEX: ${{ secrets.ANDROID_KEYSTORE_HEX }}
         run: |
-          printf "%s" "$KEYSTORE_BASE64" | base64 --decode > "$RUNNER_TEMP/alkafel-release.keystore"
+          printf "%s" "$KEYSTORE_HEX" | xxd -r -p > "$RUNNER_TEMP/alkafel-release.keystore"
           test -s "$RUNNER_TEMP/alkafel-release.keystore"
 
       - name: Build Protected Release APK
