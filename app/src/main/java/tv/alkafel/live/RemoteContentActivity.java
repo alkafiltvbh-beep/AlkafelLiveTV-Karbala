@@ -15,7 +15,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
+import android.app.Activity;
 
 import com.bumptech.glide.Glide;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class RemoteContentActivity extends AppCompatActivity {
+public class RemoteContentActivity extends Activity {
     private static final int BG = Color.rgb(7, 12, 20);
     private static final int CARD = Color.rgb(16, 25, 39);
     private static final int GOLD = Color.rgb(244, 194, 53);
