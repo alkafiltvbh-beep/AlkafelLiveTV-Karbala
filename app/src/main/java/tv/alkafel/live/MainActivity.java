@@ -176,6 +176,7 @@ public class MainActivity extends Activity {
         ads.addView(poster("تنويه", "تحديثات القناة"));
         adsScroll.addView(ads);
         page.addView(adsScroll, matchWrapWithMargin(0, 0, 0, 14));
+        FirebaseHomeContent.bind(this, marquee, ads);
 
         sectionTitle(page, "مواقيت الصلاة");
         LinearLayout prayerCard = cardContainer(16, Color.rgb(95,65,15));
