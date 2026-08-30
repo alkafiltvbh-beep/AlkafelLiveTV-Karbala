@@ -213,6 +213,7 @@ public class MainActivity extends Activity {
         page.addView(nav);
 
         setContentView(scroll);
+        AppUpdateChecker.check(this);
         startPlayer();
         fetchPrayerTimes();
     }
