@@ -164,6 +164,7 @@ public class MainActivity extends Activity {
         features.addView(featureCard("لبيك يا حسين", "يا حسين", 0), gridFeature());
         features.addView(featureCard("الزيارات", "زيارة", 1), gridFeature());
         features.addView(studioCard(), gridFeature());
+        features.addView(featureCard("\u0627\u0644\u0625\u0639\u0644\u0627\u0646\u0627\u062a \u0648\u0627\u0644\u0628\u0648\u0633\u062a\u0631\u0627\u062a", "\u0639\u0631\u0636 \u0627\u0644\u0645\u062d\u062a\u0648\u0649", 2), gridFeature());
         page.addView(features, matchWrapWithMargin(0, 0, 0, 14));
 
         sectionTitle(page, "الإعلانات والبوسترات");
@@ -282,6 +283,12 @@ public class MainActivity extends Activity {
         t.setOnClickListener(v -> { if ("المجالس".equals(title)) openUrl("https://www.youtube.com/@AlkafilTVBHUK"); else Toast.makeText(this, title + " — قريبًا", Toast.LENGTH_SHORT).show(); });
         return t;
     }
+    private void openRemotePage(String title, String collections) {
+        Intent i = new Intent(this, RemoteContentActivity.class);
+        i.putExtra("title", title);
+        i.putExtra("collections", collections);
+        startActivity(i);
+    }
 
     private View featureCard(String title, String sub, int type) {
         LinearLayout c = cardContainer(16, type == 0 ? RED : Color.rgb(100,70,20));
@@ -293,7 +300,9 @@ public class MainActivity extends Activity {
         TextView t = txt(title, 14, true, Color.WHITE);
         t.setGravity(Gravity.CENTER);
         c.addView(t);
+        if (type == 0) c.setOnClickListener(v -> openRemotePage("\u0644\u0628\u064a\u0643 \u064a\u0627 \u062d\u0633\u064a\u0646", "labbaik"));
         if (type == 1) c.setOnClickListener(v -> startActivity(new Intent(this, ZiyaratActivity.class)));
+        if (type == 2) c.setOnClickListener(v -> openRemotePage("\u0627\u0644\u0625\u0639\u0644\u0627\u0646\u0627\u062a \u0648\u0627\u0644\u0628\u0648\u0633\u062a\u0631\u0627\u062a", "announcements,posters"));
         return c;
     }
 
@@ -308,6 +317,7 @@ public class MainActivity extends Activity {
         TextView t = txt("استديو الكافل", 13, true, Color.WHITE);
         t.setGravity(Gravity.CENTER);
         c.addView(t);
+        c.setOnClickListener(v -> openRemotePage("\u0627\u0633\u062a\u062f\u064a\u0648 \u0627\u0644\u0643\u0627\u0641\u0644", "studio"));
         return c;
     }
 
