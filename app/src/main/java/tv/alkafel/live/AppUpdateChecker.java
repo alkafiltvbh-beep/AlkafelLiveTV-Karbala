@@ -22,7 +22,8 @@ public final class AppUpdateChecker {
     private static void showIfNeeded(Activity activity, DocumentSnapshot document) {
         if (!document.exists() || activity.isFinishing()) return;
         Number newest = (Number) document.get("versionCode");
-        if (newest == null || newest.longValue() <= BuildConfig.VERSION_CODE) return;
+        long current; try { current = activity.getPackageManager().getPackageInfo(activity.getPackageName(), 0).versionCode; } catch (Exception e) { return; }
+        if (newest == null || newest.longValue() <= current) return;
 
         String message = document.getString("message");
         String apkUrl = document.getString("apkUrl");
