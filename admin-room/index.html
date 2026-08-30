@@ -36,7 +36,7 @@
     import { getFirestore, collection, addDoc, setDoc, doc, deleteDoc, onSnapshot, serverTimestamp, query, orderBy } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
     const firebaseConfig={apiKey:"AIzaSyB4Nb3XD7fOYnMBaax8GwMqw_hXs6fHLMs",authDomain:"alkafel-live-tv.firebaseapp.com",projectId:"alkafel-live-tv",storageBucket:"alkafel-live-tv.firebasestorage.app",messagingSenderId:"207636839919",appId:"1:207636839919:web:34fc137a18421e29ac4a1a"};
     const app=initializeApp(firebaseConfig),auth=getAuth(app),db=getFirestore(app);
-    const sections=[['announcements','الإعلانات'],['schedule','جدول البث'],['preachers','الخطباء'],['visits','الزيارات'],['labbaik','لبيك يا حسين'],['studio','استديو الكافل'],['app_settings','إعدادات التطبيق']];
+    const sections=[['announcements','الإعلانات'],['news_ticker','الشريط الإخباري'],['schedule','جدول البث'],['preachers','الخطباء'],['visits','الزيارات'],['labbaik','لبيك يا حسين'],['studio','استديو الكافل'],['app_settings','إعدادات التطبيق']];
     const $=id=>document.getElementById(id); let active='announcements',unsubscribe=null,cache=[];
     function toast(msg){$('toast').textContent=msg;$('toast').classList.remove('hidden');setTimeout(()=>$('toast').classList.add('hidden'),2600)}
     function resetForm(){$('itemForm').reset();$('docId').value='';$('order').value=0;$('enabled').checked=true;$('formTitle').textContent='إضافة محتوى'}
