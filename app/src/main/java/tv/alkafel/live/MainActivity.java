@@ -231,7 +231,7 @@ public class MainActivity extends Activity {
     private void fetchPrayerTimes() {
         new Thread(() -> {
             try {
-                URL url = new URL("https://api.aladhan.com/v1/timingsByCity?city=Karbala&country=Iraq&method=4");
+                URL url = new URL("https://api.aladhan.com/v1/timingsByCity?city=Karbala&country=Iraq&method=0");
                 HttpURLConnection c = (HttpURLConnection) url.openConnection();
                 c.setConnectTimeout(7000);
                 c.setReadTimeout(7000);
@@ -256,10 +256,58 @@ public class MainActivity extends Activity {
     }
 
     private void setPrayerPlaceholder() {
+        try { setPrayerRows(localPrayerTimes(java.util.Calendar.getInstance(java.util.TimeZone.getTimeZone("Asia/Baghdad")))); return; } catch (Exception ignored) { }
         setPrayerRows(new String[][]{
                 {"الفجر","--:--"},{"الشروق","--:--"},{"الظهر","--:--"},
                 {"العصر","--:--"},{"المغرب","--:--"},{"العشاء","--:--"}
         });
+    }
+
+    private static String[][] localPrayerTimes(java.util.Calendar cal) {
+        double lat = 32.6160, lng = 44.0249, tz = 3.0;
+        int y = cal.get(java.util.Calendar.YEAR), m = cal.get(java.util.Calendar.MONTH) + 1, d = cal.get(java.util.Calendar.DAY_OF_MONTH);
+        if (m <= 2) { y -= 1; m += 12; }
+        double A = Math.floor(y / 100.0), B = 2 - A + Math.floor(A / 4);
+        double jd = Math.floor(365.25 * (y + 4716)) + Math.floor(30.6001 * (m + 1)) + d + B - 1524.5 - lng / (15 * 24.0);
+        double fajr = ptAngle(jd, lat, 16, 5 / 24.0, true);
+        double sunrise = ptAngle(jd, lat, 0.833, 6 / 24.0, true);
+        double dhuhr = ptMid(jd, 12 / 24.0);
+        double asr = ptAsr(jd, lat, 13 / 24.0);
+        double maghrib = ptAngle(jd, lat, 4, 18 / 24.0, false);
+        double isha = ptAngle(jd, lat, 14, 18 / 24.0, false);
+        double adj = tz - lng / 15.0;
+        double[] t = {fajr, sunrise, dhuhr, asr, maghrib, isha};
+        String[] n = {"الفجر", "الشروق", "الظهر", "العصر", "المغرب", "العشاء"};
+        String[][] out = new String[6][2];
+        for (int i = 0; i < 6; i++) {
+            double h = t[i] + adj; h = h - 24 * Math.floor(h / 24);
+            int mins = (int) Math.round(h * 60); int hh = (mins / 60) % 24, mm = mins % 60;
+            out[i][0] = n[i]; out[i][1] = String.format(java.util.Locale.US, "%02d:%02d", hh, mm);
+        }
+        return out;
+    }
+    private static double[] ptSun(double jd) {
+        double D = jd - 2451545.0;
+        double g = ptFix(357.529 + 0.98560028 * D, 360), q = ptFix(280.459 + 0.98564736 * D, 360);
+        double L = ptFix(q + 1.915 * Math.sin(Math.toRadians(g)) + 0.020 * Math.sin(Math.toRadians(2 * g)), 360);
+        double e = 23.439 - 0.00000036 * D;
+        double RA = Math.toDegrees(Math.atan2(Math.cos(Math.toRadians(e)) * Math.sin(Math.toRadians(L)), Math.cos(Math.toRadians(L)))) / 15;
+        double eqt = q / 15 - ptFix(RA, 24);
+        double decl = Math.toDegrees(Math.asin(Math.sin(Math.toRadians(e)) * Math.sin(Math.toRadians(L))));
+        return new double[]{decl, eqt};
+    }
+    private static double ptFix(double a, double b) { a = a - b * Math.floor(a / b); return a < 0 ? a + b : a; }
+    private static double ptMid(double jd, double t) { return ptFix(12 - ptSun(jd + t)[1], 24); }
+    private static double ptAngle(double jd, double lat, double angle, double t, boolean ccw) {
+        double decl = ptSun(jd + t)[0], noon = ptMid(jd, t);
+        double T = Math.toDegrees(Math.acos((-Math.sin(Math.toRadians(angle)) - Math.sin(Math.toRadians(decl)) * Math.sin(Math.toRadians(lat)))
+                / (Math.cos(Math.toRadians(decl)) * Math.cos(Math.toRadians(lat))))) / 15;
+        return noon + (ccw ? -T : T);
+    }
+    private static double ptAsr(double jd, double lat, double t) {
+        double decl = ptSun(jd + t)[0];
+        double angle = -Math.toDegrees(Math.atan(1 / (1 + Math.tan(Math.toRadians(Math.abs(lat - decl))))));
+        return ptAngle(jd, lat, angle, t, false);
     }
 
     private void setPrayerRows(String[][] vals) {
