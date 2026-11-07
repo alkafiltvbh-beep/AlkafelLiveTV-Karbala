@@ -207,8 +207,8 @@ public class MainActivity extends Activity {
         nav.setGravity(Gravity.CENTER);
         nav.addView(navItem("الرئيسية", "⌂", true), new LinearLayout.LayoutParams(0, dp(72), 1f));
         nav.addView(navItem("البث", "▶", false), new LinearLayout.LayoutParams(0, dp(72), 1f));
-        nav.addView(navItem("المجالس", "♨", false), new LinearLayout.LayoutParams(0, dp(72), 1f));
-        nav.addView(navItem("الخطباء", "♟", false), new LinearLayout.LayoutParams(0, dp(72), 1f));
+        { View nv = navItem("المجالس", "♨", false); nv.setOnClickListener(v -> openSection("المجالس")); nav.addView(nv, new LinearLayout.LayoutParams(0, dp(72), 1f)); }
+        { View nv = navItem("الخطباء", "♟", false); nv.setOnClickListener(v -> openSection("الخطباء")); nav.addView(nv, new LinearLayout.LayoutParams(0, dp(72), 1f)); }
         nav.addView(navItem("المزيد", "•••", false), new LinearLayout.LayoutParams(0, dp(72), 1f));
         page.addView(nav);
 
@@ -281,9 +281,16 @@ public class MainActivity extends Activity {
         TextView t = txt(icon + "\n" + title, 14, true, Color.WHITE);
         t.setGravity(Gravity.CENTER);
         t.setBackground(roundBg(CARD, 16, 1, Color.rgb(65,65,65)));
-        t.setOnClickListener(v -> { if ("المجالس".equals(title)) openUrl("https://www.youtube.com/@AlkafilTVBHUK"); else Toast.makeText(this, title + " — قريبًا", Toast.LENGTH_SHORT).show(); });
+        t.setOnClickListener(v -> openSection(title));
         return t;
     }
+    private void openSection(String title) {
+        if ("الخطباء".equals(title)) openRemotePage("الخطباء", "preachers");
+        else if ("المجالس".equals(title)) openRemotePage("المجالس الحسينية", "majalis");
+        else if ("جدول البث".equals(title)) openRemotePage("جدول البث", "schedule,programs");
+        else Toast.makeText(this, title + " — قريبًا", Toast.LENGTH_SHORT).show();
+    }
+
     private void openRemotePage(String title, String collections) {
         Intent i = new Intent(this, RemoteContentActivity.class);
         i.putExtra("title", title);

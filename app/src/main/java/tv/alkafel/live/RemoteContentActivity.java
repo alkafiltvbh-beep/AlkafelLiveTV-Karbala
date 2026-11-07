@@ -76,7 +76,8 @@ public class RemoteContentActivity extends Activity {
                 .addOnSuccessListener(snapshot -> {
                     for (DocumentSnapshot d : snapshot.getDocuments()) {
                         Boolean visible = d.getBoolean("visible");
-                        if (visible == null || visible) documents.add(d);
+                        Boolean enabled = d.getBoolean("enabled");
+                        if ((visible == null || visible) && (enabled == null || enabled)) documents.add(d);
                     }
                     completeOne();
                 })
