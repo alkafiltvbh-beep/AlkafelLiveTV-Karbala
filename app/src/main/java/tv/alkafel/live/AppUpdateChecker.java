@@ -48,5 +48,9 @@ public final class AppUpdateChecker {
         dialog.setCancelable(!Boolean.TRUE.equals(force));
         dialog.setCanceledOnTouchOutside(!Boolean.TRUE.equals(force));
         dialog.show();
+        android.widget.Button yes = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
+        if (yes != null) { yes.setTextColor(0xFF9C0F1F); yes.setTypeface(null, android.graphics.Typeface.BOLD); }
+        android.widget.Button later = dialog.getButton(AlertDialog.BUTTON_NEGATIVE);
+        if (later != null) later.setTextColor(0xFF555555);
     }
 }
