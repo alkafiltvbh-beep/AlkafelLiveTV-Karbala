@@ -74,6 +74,7 @@ public class MainActivity extends Activity {
         header.setPadding(dp(8), dp(4), dp(8), dp(8));
 
         TextView menu = iconText("☰", 24);
+        menu.setOnClickListener(v -> showMainMenu());
         header.addView(menu, fixed(dp(42), dp(42)));
 
         LinearLayout brand = new LinearLayout(this);
@@ -332,6 +333,22 @@ public class MainActivity extends Activity {
         t.setOnClickListener(v -> openSection(title));
         return t;
     }
+    private void showMainMenu() {
+        String version = "";
+        try { version = getPackageManager().getPackageInfo(getPackageName(), 0).versionName; } catch (Exception ignored) { }
+        final String[] items = {"تحديث التطبيق", "جدول البث", "المجالس الحسينية", "الخطباء"};
+        android.app.AlertDialog dialog = new android.app.AlertDialog.Builder(this)
+            .setTitle("قناة الكافل الفضائية" + (version.isEmpty() ? "" : " – الإصدار " + version))
+            .setItems(items, (d, which) -> {
+                if (which == 0) AppUpdateChecker.checkNow(this);
+                else if (which == 1) openSection("جدول البث");
+                else if (which == 2) openSection("المجالس");
+                else openSection("الخطباء");
+            })
+            .create();
+        dialog.show();
+    }
+
     private void openSection(String title) {
         if ("الخطباء".equals(title)) openRemotePage("الخطباء", "preachers");
         else if ("المجالس".equals(title)) openRemotePage("المجالس الحسينية", "majalis");
