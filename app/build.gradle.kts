@@ -11,8 +11,8 @@ android {
         applicationId = "tv.alkafel.live"
         minSdk = 23
         targetSdk = 35
-        versionCode = 6
-        versionName = "3.2-iraq"
+        versionCode = 7
+        versionName = "3.3-iraq"
     }
 
     signingConfigs {
